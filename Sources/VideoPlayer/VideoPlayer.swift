@@ -32,7 +32,7 @@ public struct VideoPlayer {
     
     @Binding private var play: Bool
     @Binding private var time: CMTime
-    
+    private var videoGravity: AVLayerVideoGravity = .resizeAspect
     private var config = Config()
     
     /// Init video player instance.
@@ -40,10 +40,11 @@ public struct VideoPlayer {
     ///   - url: http/https URL
     ///   - play: play/pause
     ///   - time: current time
-    public init(url: URL, play: Binding<Bool>, time: Binding<CMTime> = .constant(.zero)) {
+    public init(url: URL, play: Binding<Bool>, time: Binding<CMTime> = .constant(.zero), videoGravity: AVLayerVideoGravity = .resizeAspect) {
         self.url = url
         _play = play
         _time = time
+        self.videoGravity = videoGravity
     }
 }
 
@@ -142,7 +143,7 @@ extension VideoPlayer: UIViewRepresentable {
     
     public func makeUIView(context: Context) -> VideoPlayerView {
         let uiView = VideoPlayerView()
-        
+        uiView.playerLayer.videoGravity = self.videoGravity
         uiView.playToEndTime = {
             if self.config.autoReplay == false {
                 self.play = false
