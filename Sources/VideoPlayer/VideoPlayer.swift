@@ -28,7 +28,7 @@ public struct VideoPlayer {
         case error(NSError)
     }
     
-    private(set) var url: URL
+    @Binding var url: String
     
     @Binding private var play: Bool
     @Binding private var time: CMTime
@@ -40,8 +40,8 @@ public struct VideoPlayer {
     ///   - url: http/https URL
     ///   - play: play/pause
     ///   - time: current time
-    public init(url: URL, play: Binding<Bool>, time: Binding<CMTime> = .constant(.zero), videoGravity: AVLayerVideoGravity = .resizeAspect) {
-        self.url = url
+    public init(url: Binding<String>, play: Binding<Bool>, time: Binding<CMTime> = .constant(.zero), videoGravity: AVLayerVideoGravity = .resizeAspect) {
+        _url = url
         _play = play
         _time = time
         self.videoGravity = videoGravity
@@ -175,7 +175,9 @@ extension VideoPlayer: UIViewRepresentable {
     }
     
     public func updateUIView(_ uiView: VideoPlayerView, context: Context) {
-        play ? uiView.play(for: url) : uiView.pause(reason: .userInteraction)
+        if let getURL = URL(string: self.url) {
+            play ? uiView.play(for: getURL) : uiView.pause(reason: .userInteraction)
+        }
         uiView.isMuted = config.mute
         uiView.isAutoReplay = config.autoReplay
         
