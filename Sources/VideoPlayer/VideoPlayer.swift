@@ -28,7 +28,7 @@ public struct VideoPlayer {
         case error(NSError)
     }
     
-    private var url: URL?
+    @Binding var url: URL?
     
     @Binding private var play: Bool
     @Binding private var time: CMTime
@@ -40,8 +40,8 @@ public struct VideoPlayer {
     ///   - url: http/https URL
     ///   - play: play/pause
     ///   - time: current time
-    public init(url: URL?, play: Binding<Bool>, time: Binding<CMTime> = .constant(.zero), videoGravity: AVLayerVideoGravity = .resizeAspect) {
-        self.url = url
+    public init(url: Binding<URL?>, play: Binding<Bool>, time: Binding<CMTime> = .constant(.zero), videoGravity: AVLayerVideoGravity = .resizeAspect) {
+        _url = url
         _play = play
         _time = time
         self.videoGravity = videoGravity
